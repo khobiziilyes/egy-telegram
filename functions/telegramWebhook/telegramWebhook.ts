@@ -40,6 +40,7 @@ async function handleStartMessage(reply: replyFunc) {
 
 async function handleSerieRequest(reply: replyFunc, serie: string) {
   const seasons = await getShowSeasons(serie);
+  console.log(seasons);
 
   await reply(
     'Select the season',
