@@ -41,7 +41,7 @@
     "axios-cookiejar-support": "^4.0.3",
     "deasync": "^0.1.28",
     "dotenv": "^16.0.1",
-    "egy-apis": "^1.0.5",
+    "egy-apis": "*",
     "tough-cookie": "^4.1.2",
     "tslib": "~2.4"
   },
