@@ -1,34 +1,78 @@
-/**
- * Some predefined delay values (in milliseconds).
- */
-export enum Delays {
-  Short = 500,
-  Medium = 2000,
-  Long = 5000,
+import { Telegraf, Markup } from 'telegraf';
+import {} from 'telegraf/typings';
+
+import {
+  searchForShow,
+  getShowSeasons,
+  getSeasonEpisodes,
+  getDownloadLinks,
+} from 'egy-apis';
+
+function reply(ctx, text: string, buttons: any[]) {
+  return ctx.reply(text, Markup.inlineKeyboard(buttons, { columns: 1 }));
 }
 
-/**
- * Returns a Promise<string> that resolves after a given time.
- *
- * @param {string} name - A name.
- * @param {number=} [delay=Delays.Medium] - A number of milliseconds to delay resolution of the Promise.
- * @returns {Promise<string>}
- */
-function delayedHello(
-  name: string,
-  delay: number = Delays.Medium,
-): Promise<string> {
-  return new Promise((resolve: (value?: string) => void) =>
-    setTimeout(() => resolve(`Hello, ${name}`), delay),
-  );
-}
+const bot = new Telegraf('5750001271:AAGh4fHIZQ78ASDF8tUCfSV1W9JWE749uOA');
+const PORT = process.env.PORT || 3000;
+const HOST = 'algbest.herokuapp.com';
 
-// Please see the comment in the .eslintrc.json file about the suppressed rule!
-// Below is an example of how to use ESLint errors suppression. You can read more
-// at https://eslint.org/docs/latest/user-guide/configuring/rules#disabling-rules
+bot.start((ctx) => ctx.reply('Welcome :) just send me the show name.'));
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export async function greeter(name: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
-  // The name parameter should be of type string. Any is used only to trigger the rule.
-  return await delayedHello(name, Delays.Long);
-}
+bot.on('text', (ctx) =>
+  searchForShow(ctx.message.text).then((shows) =>
+    reply(
+      ctx,
+      'Choose your show',
+      shows.map((show) => Markup.button.callback(show.title, show.url)),
+    ),
+  ),
+);
+
+bot.on('callback_query', async (ctx) => {
+  const url = ctx.callbackQuery.data;
+
+  if (url.startsWith('/series')) {
+    const seasons = await getShowSeasons(url.slice(8));
+
+    reply(
+      ctx,
+      'Choose the season',
+      seasons.map((season) => Markup.button.callback(season, season)),
+    );
+  }
+
+  if (url.startsWith('/season')) {
+    const episodes = await getSeasonEpisodes(url.slice(8));
+
+    reply(
+      ctx,
+      'Choose the episode',
+      episodes.map((episode) => Markup.button.callback(episode, episode)),
+    );
+  }
+
+  if (url.startsWith('/episode') || url.startsWith('/show')) {
+    ctx.reply('Searching ... Keep waiting');
+
+    const downloadLinks = await getDownloadLinks(url);
+
+    reply(
+      ctx,
+      'Choose the quality',
+      downloadLinks.map((link) => Markup.button.url(link.quality, link.link)),
+    );
+  }
+});
+
+// bot.telegram.setWebhook(`${URL}/bot${API_TOKEN}`);
+
+bot.launch({
+  webhook: {
+    hookPath: '/',
+    domain: HOST,
+    port: +PORT,
+  },
+});
+
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
