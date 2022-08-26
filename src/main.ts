@@ -14,7 +14,7 @@ function reply(ctx, text: string, buttons: any[]) {
 
 const bot = new Telegraf('5750001271:AAGh4fHIZQ78ASDF8tUCfSV1W9JWE749uOA');
 const PORT = process.env.PORT || 3000;
-const HOST = 'algbest.herokuapp.com';
+const HOST = 'algbest.netlify.app';
 
 bot.start((ctx) => ctx.reply('Welcome :) just send me the show name.'));
 
