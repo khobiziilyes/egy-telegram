@@ -75,7 +75,7 @@ async function handleEpisodeRequest(reply: replyFunc, episode: string) {
   const downloadLinks = await getDownloadLinks(episode);
 
   await reply(
-    'Download your episode',
+    'Download your desired episode',
     downloadLinks.map((link) => [
       {
         text: link.quality,
