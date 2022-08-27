@@ -9,6 +9,7 @@ import {
 } from './getShowSeasons';
 
 import { getDownloadLinks } from './getDownloadLinks';
+import { egyJsonClient } from './presistentClient';
 
 function byEight<T>(arr: T[]): T[][] {
   return arr.reduce(
@@ -36,6 +37,13 @@ const sendMessage = (chat_id: number, text: string, buttons: Tbuttons) =>
 
 async function handleStartMessage(reply: replyFunc) {
   await reply('Welcome! to use, simply send the name of the movie/serie.');
+
+  const resp = await egyJsonClient.get(
+    '/movie/samaritan-2022/?ref=home-trends&output_format=json',
+  );
+
+  console.log(resp);
+
   return { statusCode: 200 };
 }
 
@@ -111,7 +119,7 @@ export const handler: Handler = async (event) => {
     if (text.startsWith('/season'))
       return await handleSeasonRequest(reply, text.slice(8));
 
-    if (text.startsWith('/episode'))
+    if (text.startsWith('/episode') || text.startsWith('/movie'))
       return await handleEpisodeRequest(reply, text);
   }
 
