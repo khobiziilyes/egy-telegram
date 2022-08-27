@@ -88,7 +88,7 @@ async function handleEpisodeRequest(reply: replyFunc, episode: string) {
   return { statusCode: 200 };
 }
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event) => {
   const { message, callback_query } = JSON.parse(
     event.body || '{}',
   ) as ITelegramUpdate;
