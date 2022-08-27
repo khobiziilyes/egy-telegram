@@ -5,7 +5,16 @@ import { wrapper } from 'axios-cookiejar-support';
 export function presistentClient(extraConfig = {}): AxiosInstance {
   const jar = new CookieJar();
 
-  const client = wrapper(axios.create({ jar, ...extraConfig }));
+  const client = wrapper(
+    axios.create({
+      proxy: {
+        host: '41.65.236.58',
+        port: 1976,
+      },
+      jar,
+      ...extraConfig,
+    }),
+  );
 
   return client;
 }
