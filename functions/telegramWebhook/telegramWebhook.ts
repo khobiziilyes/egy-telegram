@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { Handler } from '@netlify/functions';
-import {
-  searchForShow,
-  getShowSeasons,
-  getSeasonEpisodes,
-  getDownloadLinks,
-} from 'egy-apis';
 
 import { Tbuttons, replyFunc, ITelegramUpdate } from './interfaces';
+import {
+  getShowSeasons,
+  getSeasonEpisodes,
+  searchForShow,
+} from './getShowSeasons';
+
+import { getDownloadLinks } from './getDownloadLinks';
 
 function byEight<T>(arr: T[]): T[][] {
   return arr.reduce(
