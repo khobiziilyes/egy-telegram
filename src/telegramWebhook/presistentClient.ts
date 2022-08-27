@@ -8,7 +8,7 @@ export function presistentClient(extraConfig = {}): AxiosInstance {
   const client = wrapper(
     axios.create({
       proxy: {
-        host: '41.65.55.2',
+        host: '41.65.0.198',
         port: 1976,
       },
       jar,
